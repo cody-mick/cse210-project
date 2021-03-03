@@ -26,4 +26,5 @@ root                    (project root folder)
 
 ## Authors
 ---
-[list author names and emails]
+Cody Mickelsen - cmick@byui.edu
+
