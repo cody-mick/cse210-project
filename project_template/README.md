@@ -22,12 +22,12 @@ root                    (project root folder)
 
 ## Required Technologies
 ---
-Must have at least Python version 3.8
-Uses the Arcade python library.
+# Must have at least Python version 3.8
+# Uses the Arcade python library.
 
 ## Authors
 ---
-Cody Mickelsen - cmick@byui.edu
-Sam Cummings - 
-Erick Vega - 
-Trent Patton - 
+# Cody Mickelsen - cmick@byui.edu
+# Sam Cummings - 
+# Erick Vega - 
+# Trent Patton - 
