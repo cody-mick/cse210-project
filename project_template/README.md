@@ -1,4 +1,4 @@
-# [PROGRAM NAME] 
+# GAME ABOUT COVID 
 [a description of the program]
 
 ## Getting Started
@@ -22,9 +22,12 @@ root                    (project root folder)
 
 ## Required Technologies
 ---
-[list required libraries]
+Must have at least Python version 3.8
+Uses the Arcade python library.
 
 ## Authors
 ---
 Cody Mickelsen - cmick@byui.edu
-
+Sam Cummings - 
+Erick Vega - 
+Trent Patton - 
