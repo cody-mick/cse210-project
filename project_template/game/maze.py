@@ -8,6 +8,8 @@ python -m arcade.examples.sprite_move_walls
 import constants 
 import arcade
 import os
+from destroyable_blocks import Destroyable_blocks
+from virus_cells import Virus_cells
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -25,9 +27,14 @@ class MyGame(arcade.Window):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
+        self.destroyable_blocks = Destroyable_blocks()
+        self.virus_cells = Virus_cells()
+
         # Sprite lists
         self.coin_list = None
         self.wall_list = None
+        self.random_wall_list = self.destroyable_blocks.random_wall_list 
+        self.virus_cells = self.virus_cells.virus_cells
         self.player_list = None
 
         # Set up the player
@@ -92,10 +99,16 @@ class MyGame(arcade.Window):
             wall.left = x
             wall.bottom = 384 #Change this to a constant later haha
             self.wall_list.append(wall)
+        
+        temp_lis1 = self.wall_list
+        temp_lis2 = self.random_wall_list
 
+        new = temp_lis1.extend(temp_lis2)
 
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+        # self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.random_wall_list)
+        
 
         # Set the background color
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
@@ -112,8 +125,11 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
 
         # Draw all the sprites.
-        self.wall_list.draw()
         self.player_list.draw()
+        self.random_wall_list.draw()
+        self.virus_cells.draw()
+        self.wall_list.draw()
+
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
