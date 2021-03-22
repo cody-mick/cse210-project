@@ -2,6 +2,7 @@ import arcade
 from arcade.sprite import Sprite
 import constants
 import random
+# from maze import MyGame
 
 class Virus_cells:
     """ 
@@ -10,6 +11,8 @@ class Virus_cells:
     def __init__(self):
         super().__init__
         self.virus_cells = None
+        # self.maze = MyGame(arcade.Window)
+        # self.walls = self.maze.wall_list
         self.setup()
 
     def setup(self):
@@ -22,7 +25,11 @@ class Virus_cells:
             cell.bottom = row
             cell.left = random.randrange(64, constants.SCREEN_WIDTH - 64, 64)
             # cell.velocity = (random.randint(-200, -50), 0) # x, y
+            # if cell.bottom != self.walls.bottom and cell.left != self.walls.left:
             self.virus_cells.append(cell)
+
+    # def on_draw(self):
+    #     self.virus_cells.
 
 class FlyingSprite(arcade.Sprite):
     """Base class for all flying sprites

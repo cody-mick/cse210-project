@@ -37,7 +37,7 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.player_list = None
-        self.random_wall_list = self.destroyable_blocks.random_wall_list 
+        self.brick_list = self.destroyable_blocks.brick_list 
         self.enemies = self.virus_cells.virus_cells
         self.all_obstacles = None
         self.destroyable_objects = None
@@ -110,12 +110,12 @@ class MyGame(arcade.Window):
 
         # Add all of the obstacles 
         self.all_obstacles.extend(self.wall_list)
-        self.all_obstacles.extend(self.random_wall_list)
+        self.all_obstacles.extend(self.brick_list)
         self.all_obstacles.extend(self.enemies)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)  
 
         # Combine destroyable materials together - don't know where to put this 
-        self.destroyable_objects.extend(self.random_wall_list)
+        self.destroyable_objects.extend(self.brick_list)
         self.destroyable_objects.extend(self.enemies)
 
         # Set the background color
@@ -134,7 +134,9 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
      
-        self.all_obstacles.draw()
+        self.enemies.draw()
+        self.brick_list.draw()
+        self.wall_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
  
