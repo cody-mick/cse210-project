@@ -24,7 +24,7 @@ class Virus_cells:
             cell = arcade.Sprite("/Users/samuelcummings/Desktop/School/programming_with_classes/Projects/Final/cse210-project/project_template/game/assets/images/saw.png", constants.SPRITE_SCALING)
             cell.bottom = row
             cell.left = random.randrange(64, constants.SCREEN_WIDTH - 64, 64)
-            # cell.velocity = (random.randint(-200, -50), 0) # x, y
+            cell.velocity = (random.randint(-200, -50), 0) # x, y
             # if cell.bottom != self.walls.bottom and cell.left != self.walls.left:
             self.virus_cells.append(cell)
 

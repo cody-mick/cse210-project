@@ -37,7 +37,7 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.player_list = None
-        self.brick_list = self.destroyable_blocks.brick_list 
+        self.brick_list = self.destroyable_blocks.random_wall_list
         self.enemies = self.virus_cells.virus_cells
         self.all_obstacles = None
         self.destroyable_objects = None
@@ -57,6 +57,9 @@ class MyGame(arcade.Window):
         self.all_obstacles = arcade.SpriteList()
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+
+        for enemy in self.enemies:
+            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.brick_list) 
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -216,6 +219,10 @@ class MyGame(arcade.Window):
             # if bullet is off screen, remove it.
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
+
+        for enemy in self.enemies:
+            # updates each enemy
+            enemy.physics_engine.update()
 
 
 
