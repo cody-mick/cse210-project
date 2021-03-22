@@ -5,9 +5,11 @@ Artwork from http://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_move_walls
 """
-import constants 
+from arcade.sprite import Sprite
+from arcade.sprite_list import SpriteList
 import arcade
 import os
+import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
 
@@ -33,11 +35,11 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.coin_list = None
         self.wall_list = None
-        self.random_wall_list = self.destroyable_blocks.random_wall_list 
-        self.virus_cells = self.virus_cells.virus_cells
         self.player_list = None
-
-        # Set up the player
+        self.random_wall_list = self.destroyable_blocks.random_wall_list 
+        self.enemies = self.virus_cells.virus_cells
+        self.all_obstacles = None
+        
         self.player_sprite = None
         self.physics_engine = None
 
@@ -49,6 +51,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
+        self.all_obstacles = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -99,16 +102,12 @@ class MyGame(arcade.Window):
             wall.left = x
             wall.bottom = 384 #Change this to a constant later haha
             self.wall_list.append(wall)
-        
-        temp_lis1 = self.wall_list
-        temp_lis2 = self.random_wall_list
 
-        new = temp_lis1.extend(temp_lis2)
-
-
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
-        # self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.random_wall_list)
-        
+        # Add all of the obstacles 
+        self.all_obstacles.extend(self.wall_list)
+        self.all_obstacles.extend(self.random_wall_list)
+        self.all_obstacles.extend(self.enemies)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)  
 
         # Set the background color
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
@@ -125,10 +124,10 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
 
         # Draw all the sprites.
+     
+        self.all_obstacles.draw()
         self.player_list.draw()
-        self.random_wall_list.draw()
-        self.virus_cells.draw()
-        self.wall_list.draw()
+ 
 
 
     def on_key_press(self, key, modifiers):
