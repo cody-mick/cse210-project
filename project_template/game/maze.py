@@ -12,6 +12,7 @@ import os
 import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
+import math
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -39,6 +40,8 @@ class MyGame(arcade.Window):
         self.random_wall_list = self.destroyable_blocks.random_wall_list 
         self.enemies = self.virus_cells.virus_cells
         self.all_obstacles = None
+        self.destroyable_objects = None
+        self.bullet_list = None
         
         self.player_sprite = None
         self.physics_engine = None
@@ -52,6 +55,8 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.all_obstacles = arcade.SpriteList()
+        self.destroyable_objects = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -109,6 +114,10 @@ class MyGame(arcade.Window):
         self.all_obstacles.extend(self.enemies)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)  
 
+        # Combine destroyable materials together - don't know where to put this 
+        self.destroyable_objects.extend(self.random_wall_list)
+        self.destroyable_objects.extend(self.enemies)
+
         # Set the background color
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
@@ -127,6 +136,7 @@ class MyGame(arcade.Window):
      
         self.all_obstacles.draw()
         self.player_list.draw()
+        self.bullet_list.draw()
  
 
 
@@ -150,12 +160,64 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        "Called when the user presses the mouse"
+
+        # Create a bullet/lazer 
+        bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
+        # Position the bullet at the players location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.center_x = start_x
+        bullet.center_y = start_y
+
+        # get from the mouse the destination location (x and y)
+        dest_x = x
+        dest_y = y
+
+        # get the bullet to the destination
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff) # retruns the arc tangent of a number (x) between -pi/2 and pi/2 (think back to pre-calculus)
+
+        # Angle the bullet/laser
+        bullet.angle = math.degrees(angle)
+
+        # Now with the angle, calculate our change_x and change_y 
+        bullet.change_x = math.cos(angle) * constants.BULLET_SPEED 
+        bullet.change_y = math.sin(angle) * constants.BULLET_SPEED 
+
+        # Add bullet to list 
+        self.bullet_list.append(bullet)
+
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+
+        self.bullet_list.update()
+        for bullet in self.bullet_list:
+
+            # Check to see if the bullet hit any destroyable blocks
+            has_hit_list = arcade.check_for_collision_with_list(bullet, self.destroyable_objects)
+
+            # if so, get rid of the bullet
+            if len(has_hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+            
+            for block in has_hit_list:
+                block.remove_from_sprite_lists()
+                
+            # if bullet is off screen, remove it.
+            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
+                bullet.remove_from_sprite_lists()
+
+
+
+
 
 
 def main():
