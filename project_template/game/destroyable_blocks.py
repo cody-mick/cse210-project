@@ -1,10 +1,11 @@
 import arcade
 from arcade.sprite import Sprite
+from arcade.sprite_list import SpriteList
 import constants
 import random
 
 
-class Destroyable_blocks:
+class Destroyable_blocks(arcade.Sprite):
     """ 
     In charge of making destroyable blocks
     """
@@ -19,7 +20,7 @@ class Destroyable_blocks:
 
         # for each row generate random blocks 
         for row in range(64, constants.SCREEN_HEIGHT - 64, 64):
-            block = arcade.Sprite("/Users/samuelcummings/Desktop/School/programming_with_classes/Projects/Final/cse210-project/project_template/game/assets/images/brickTextureWhite.png", constants.SPRITE_SCALING)
+            block = arcade.Sprite("assets/images/brickTextureWhite.png", constants.SPRITE_SCALING)
             block.bottom = row
             block.left = random.randrange(64, constants.SCREEN_WIDTH - 64, 64)
             self.random_wall_list.append(block)

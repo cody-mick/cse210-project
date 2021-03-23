@@ -1,10 +1,3 @@
-"""
-Sprite Move With Walls
-Simple program to show basic sprite usage.
-Artwork from http://kenney.nl
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_walls
-"""
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
