@@ -172,8 +172,7 @@ class MyGame(arcade.Window):
 
         for enemy in self.enemies:
             # updates each enemy
-            enemy.velocity = (2,-1)
-            self.enemies.append(enemy)
+            
             enemy.physics_engine.update()
         
  
