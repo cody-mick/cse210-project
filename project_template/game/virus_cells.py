@@ -19,14 +19,29 @@ class Virus_cells(arcade.Sprite):
     def setup(self):
         # Set up the cells
         self.virus_cells = arcade.SpriteList()
+        
 
+        # Horizontal enemies
         # for each iteration create an enemy 
-        for i in range(3): # 3 enemies in this case
+        virus_bottom_position = [128, 256, 320, 448]
+        for i in range(4): # 3 enemies in this case
             cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
-            cell.bottom = random.randrange(64, constants.SCREEN_HEIGHT - 64, 64)
-            cell.left = random.randrange(64, constants.SCREEN_WIDTH - 64, 64)
-            cell.velocity = (-2, 0) # x, y
+            cell.bottom = virus_bottom_position[i]
+            cell.left = constants.SCREEN_WIDTH - 128
+            cell.change_x = random.randrange(-1,-3,-1)
+            cell.change_y = 0
             self.virus_cells.append(cell)
+
+        # Vertical enemies
+        # for each iteration create an enemy 
+        virus_left_position = [192, 320, 448, 576]
+        for i in range(4): # 3 enemies in this case
+            cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
+            cell.bottom = constants.SCREEN_HEIGHT - 128
+            cell.left = virus_left_position[i]
+            cell.change_x = 0 # x, y
+            cell.change_y = random.randrange(-1,-3,-1)
+            self.virus_cells.append(cell)        
 
 
 
