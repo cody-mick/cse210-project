@@ -7,6 +7,7 @@ from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
 from solid_blocks import Solid_blocks
 import math
+import random
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -60,9 +61,10 @@ class MyGame(arcade.Window):
         # Add all of the obstacles 
         self.all_obstacles.extend(self.wall_list)
         self.all_obstacles.extend(self.brick_list)
-        self.all_obstacles.extend(self.enemies)
+        #self.all_obstacles.extend(self.enemies)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)
 
+                    
         for enemy in self.enemies:
             enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.all_obstacles)   
 
@@ -150,7 +152,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.physics_engine.update()
+        self.physics_engine.update() 
         
 
         self.bullet_list.update()
@@ -170,12 +172,20 @@ class MyGame(arcade.Window):
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
 
+
+        #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
         for enemy in self.enemies:
+
             # updates each enemy
-            
-            enemy.physics_engine.update()
-        
- 
+            if len(arcade.check_for_collision_with_list(enemy, self.all_obstacles)) > 0:
+                enemy.change_x *= -1 
+                enemy.change_y *= -1 
+                        
+  
+        self.enemies.update()
+
+                
+
 def main():
     """ Main method """
     window = MyGame(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)

@@ -1,7 +1,10 @@
-Each create a level and end with a boss fight on the 5th level.
-Implement physics that can just be dropped into a level screen.
-i.e. enemies go until they hit a wall and then change direction until they can move again. (roomba)
-using tiled map editor to create the 4 levels.
-picking artwork.
-Sounds.
-Done.
+Things we have left to do:
+1. levels
+1a. Projectile collision
+2. character animation
+3. Sounds
+4. Title screen
+5. new character sprites - new player sprite, new enemy sprite, new background (etc.)
+6. point system
+7. Difficulty Progression - coins for additional points, platforming
+8. 
