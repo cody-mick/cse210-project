@@ -1,0 +1,7 @@
+Each create a level and end with a boss fight on the 5th level.
+Implement physics that can just be dropped into a level screen.
+i.e. enemies go until they hit a wall and then change direction until they can move again. (roomba)
+using tiled map editor to create the 4 levels.
+picking artwork.
+Sounds.
+Done.

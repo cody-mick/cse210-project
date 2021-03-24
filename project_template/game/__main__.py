@@ -5,6 +5,7 @@ import os
 import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
+from solid_blocks import Solid_blocks
 import math
 
 class MyGame(arcade.Window):
@@ -23,15 +24,13 @@ class MyGame(arcade.Window):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
-        self.destroyable_blocks = Destroyable_blocks()
-        self.virus_cells = Virus_cells()
-
+    
         # Sprite lists
         self.coin_list = None
-        self.wall_list = None
+        self.wall_list = Solid_blocks().wall_list
         self.player_list = None
-        self.brick_list = self.destroyable_blocks.random_wall_list
-        self.enemies = self.virus_cells.virus_cells
+        self.brick_list = Destroyable_blocks().random_wall_list
+        self.enemies = Virus_cells().virus_cells
         self.all_obstacles = None
         self.destroyable_objects = None
         self.bullet_list = None
@@ -46,13 +45,9 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
         self.all_obstacles = arcade.SpriteList()
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-
-        for enemy in self.enemies:
-            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.brick_list) 
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -61,54 +56,15 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
 
-        # -- Set up the walls
-        # Create the bottom wall
-        for x in range(0, constants.SCREEN_WIDTH, 64): #We can change 64 by something like (img_width/2 * SCALING)
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.left = x
-            wall.bottom = 0 
-            self.wall_list.append(wall)
-
-        # Create the top wall
-        for x in range(0, constants.SCREEN_WIDTH, 64): #We can change 64 by something like (img_width/2 * SCALING)
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.left = x
-            wall.top = constants.SCREEN_HEIGHT
-            self.wall_list.append(wall)
-
-        # Create a left wall
-        for y in range(0, constants.SCREEN_HEIGHT, 64):
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.left = 0
-            wall.bottom = y
-            self.wall_list.append(wall)
-
-        # Create a right wall
-        for y in range(0, constants.SCREEN_HEIGHT, 64):
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.right = constants.SCREEN_WIDTH
-            wall.bottom = y
-            self.wall_list.append(wall)
-
-        #Create solid blocks
-        for x in range(128, constants.SCREEN_WIDTH-128, 128): 
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.left = x
-            wall.bottom = 192 #Change this to a constant later haha
-            self.wall_list.append(wall)
-
-        #Create solid blocks
-        for x in range(128, constants.SCREEN_WIDTH-128, 128): 
-            wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
-            wall.left = x
-            wall.bottom = 384 #Change this to a constant later haha
-            self.wall_list.append(wall)
 
         # Add all of the obstacles 
         self.all_obstacles.extend(self.wall_list)
         self.all_obstacles.extend(self.brick_list)
         self.all_obstacles.extend(self.enemies)
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)  
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)
+
+        for enemy in self.enemies:
+            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.all_obstacles)   
 
         # Combine destroyable materials together - don't know where to put this 
         self.destroyable_objects.extend(self.brick_list)
@@ -195,6 +151,7 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+        
 
         self.bullet_list.update()
         for bullet in self.bullet_list:
@@ -215,13 +172,10 @@ class MyGame(arcade.Window):
 
         for enemy in self.enemies:
             # updates each enemy
+            
             enemy.physics_engine.update()
-
-
-
-
-
-
+        
+ 
 def main():
     """ Main method """
     window = MyGame(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
