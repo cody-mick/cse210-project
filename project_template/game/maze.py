@@ -1,10 +1,3 @@
-"""
-Sprite Move With Walls
-Simple program to show basic sprite usage.
-Artwork from http://kenney.nl
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_walls
-"""
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
@@ -37,7 +30,7 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.player_list = None
-        self.random_wall_list = self.destroyable_blocks.random_wall_list 
+        self.brick_list = self.destroyable_blocks.random_wall_list
         self.enemies = self.virus_cells.virus_cells
         self.all_obstacles = None
         self.destroyable_objects = None
@@ -57,6 +50,9 @@ class MyGame(arcade.Window):
         self.all_obstacles = arcade.SpriteList()
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+
+        for enemy in self.enemies:
+            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.brick_list) 
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -110,12 +106,12 @@ class MyGame(arcade.Window):
 
         # Add all of the obstacles 
         self.all_obstacles.extend(self.wall_list)
-        self.all_obstacles.extend(self.random_wall_list)
+        self.all_obstacles.extend(self.brick_list)
         self.all_obstacles.extend(self.enemies)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)  
 
         # Combine destroyable materials together - don't know where to put this 
-        self.destroyable_objects.extend(self.random_wall_list)
+        self.destroyable_objects.extend(self.brick_list)
         self.destroyable_objects.extend(self.enemies)
 
         # Set the background color
@@ -134,7 +130,9 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
      
-        self.all_obstacles.draw()
+        self.enemies.draw()
+        self.brick_list.draw()
+        self.wall_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
  
@@ -214,6 +212,10 @@ class MyGame(arcade.Window):
             # if bullet is off screen, remove it.
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
+
+        for enemy in self.enemies:
+            # updates each enemy
+            enemy.physics_engine.update()
 
 
 
