@@ -65,8 +65,10 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.all_obstacles)
 
                     
-        for enemy in self.enemies:
-            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.all_obstacles)   
+        # for enemy in self.enemies:
+        #     enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.all_obstacles)   
+
+
 
         # Combine destroyable materials together - don't know where to put this 
         self.destroyable_objects.extend(self.brick_list)
@@ -126,6 +128,7 @@ class MyGame(arcade.Window):
         start_y = self.player_sprite.center_y
         bullet.center_x = start_x
         bullet.center_y = start_y
+        
 
         # get from the mouse the destination location (x and y)
         dest_x = x
@@ -152,17 +155,17 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.physics_engine.update() 
-        
+        self.physics_engine.update()       
 
-        self.bullet_list.update()
+
         for bullet in self.bullet_list:
-
+            
             # Check to see if the bullet hit any destroyable blocks
             has_hit_list = arcade.check_for_collision_with_list(bullet, self.destroyable_objects)
+            has_hit_obstacles = arcade.check_for_collision_with_list(bullet, self.all_obstacles)
 
             # if so, get rid of the bullet
-            if len(has_hit_list) > 0:
+            if (len(has_hit_list) > 0) or (len(has_hit_obstacles) > 0):
                 bullet.remove_from_sprite_lists()
             
             for block in has_hit_list:
@@ -172,7 +175,7 @@ class MyGame(arcade.Window):
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
 
-
+     
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
         for enemy in self.enemies:
 
@@ -183,7 +186,7 @@ class MyGame(arcade.Window):
                         
   
         self.enemies.update()
-
+        self.bullet_list.update()
                 
 
 def main():
