@@ -9,14 +9,14 @@ from solid_blocks import Solid_blocks
 import math
 import random
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -40,6 +40,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         self.background = None
+        self.width = constants.SCREEN_WIDTH
+        self.height = constants.SCREEN_HEIGHT
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -55,7 +57,10 @@ class MyGame(arcade.Window):
                                            constants.SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
+        self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
+        self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
+    
 
 
         # Add all of the obstacles 
@@ -121,6 +126,9 @@ class MyGame(arcade.Window):
 
         # Create a bullet/lazer 
         bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
+
+        bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
+        bullet.sound.play()
         # Position the bullet at the players location
         start_x = self.player_sprite.center_x
         start_y = self.player_sprite.center_y
@@ -158,19 +166,35 @@ class MyGame(arcade.Window):
         self.bullet_list.update()
         for bullet in self.bullet_list:
 
+
             # Check to see if the bullet hit any destroyable blocks
             has_hit_list = arcade.check_for_collision_with_list(bullet, self.destroyable_objects)
+            has_hit_obstacles = arcade.check_for_collision_with_list(bullet, self.all_obstacles)
 
             # if so, get rid of the bullet
-            if len(has_hit_list) > 0:
+            if (len(has_hit_list) > 0) or (len(has_hit_obstacles) > 0):
                 bullet.remove_from_sprite_lists()
             
             for block in has_hit_list:
+                block.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
+                block.explosion_sound.play()
                 block.remove_from_sprite_lists()
                 
             # if bullet is off screen, remove it.
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
+
+        for player in self.player_list:
+            virus_player_collision = arcade.check_for_collision_with_list(player, self.enemies)
+            wall_collision = arcade.check_for_collision_with_list(player, self.all_obstacles) # Come back to this later if time
+
+            if (len(virus_player_collision) > 0):
+                player.game_over_sound.play()
+                player.remove_from_sprite_lists()
+
+            
+            
+
 
 
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
@@ -181,15 +205,37 @@ class MyGame(arcade.Window):
                 enemy.change_x *= -1 
                 enemy.change_y *= -1 
                         
-  
+
         self.enemies.update()
+        self.bullet_list.update()
 
                 
+class Menu(arcade.View):
+     """ Class that manages the 'menu' view. """
+
+     def on_show(self):
+        """ Called when switching to this view"""
+        # arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
+        arcade.set_background_color(arcade.color.WHITE)
+
+     def on_draw(self):
+        """ Draw the menu """
+        arcade.start_render()
+        arcade.draw_text("Menu Screen - click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
+                         arcade.color.BLUE, font_size=30, anchor_x="center")
+
+     def on_mouse_press(self, _x, _y, _button, _modifiers):
+        """ Use a mouse press to advance to the 'game' view. """
+        game_view = MyGame()
+        game_view.setup()
+        self.window.show_view(game_view)
 
 def main():
     """ Main method """
-    window = MyGame(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
-    window.setup()
+    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+    menu_view = Menu()
+    window.show_view(menu_view)
+    # window.setup()
     arcade.run()
 
 

@@ -19,6 +19,7 @@ class Solid_blocks(arcade.Sprite):
 
 
         # -- Set up the walls
+        
         # Create the bottom wall
         for x in range(0, constants.SCREEN_WIDTH, 64): #We can change 64 by something like (img_width/2 * SCALING)
             wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)
