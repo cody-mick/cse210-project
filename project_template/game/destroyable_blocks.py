@@ -23,6 +23,7 @@ class Destroyable_blocks(arcade.Sprite):
             block = arcade.Sprite("assets/images/brickTextureWhite.png", constants.SPRITE_SCALING)
             block.bottom = row
             block.left = random.randrange(128, constants.SCREEN_WIDTH - 128, 64)
+            block.health = random.randrange(3,5)
             self.random_wall_list.append(block)
 
 
