@@ -9,6 +9,7 @@ from solid_blocks import Solid_blocks
 import math
 import random
 
+
 class MyGame(arcade.View):
     """ Main application class. """
 
@@ -161,24 +162,39 @@ class MyGame(arcade.View):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update() 
-        
-
         self.bullet_list.update()
-        for bullet in self.bullet_list:
 
+        for bullet in self.bullet_list:
 
             # Check to see if the bullet hit any destroyable blocks
             has_hit_list = arcade.check_for_collision_with_list(bullet, self.destroyable_objects)
+            has_hit_enemies = arcade.check_for_collision_with_list(bullet, self.enemies)
             has_hit_obstacles = arcade.check_for_collision_with_list(bullet, self.all_obstacles)
 
             # if so, get rid of the bullet
             if (len(has_hit_list) > 0) or (len(has_hit_obstacles) > 0):
                 bullet.remove_from_sprite_lists()
             
-            for block in has_hit_list:
-                block.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
-                block.explosion_sound.play()
-                block.remove_from_sprite_lists()
+            for item in has_hit_list:
+                item.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
+                item.explosion_sound.play()
+                item.health -= 1
+                if item.health == 0:
+                    item.remove_from_sprite_lists()
+
+            for enemie in has_hit_enemies:
+                if enemie.health == 3:
+                    enemie.color = (255,255,0)   #Yellow    
+                    enemie.change_x = enemie.change_x * 1.5 
+                    enemie.change_y = enemie.change_y * 1.5 
+                if enemie.health == 2:
+                    enemie.color = (255,153,51)  #Orange
+                    enemie.change_x = enemie.change_x * 1.5 
+                    enemie.change_y = enemie.change_y * 1.5 
+                if enemie.health == 1:
+                    enemie.color = (255,0,0)   #Red
+                    enemie.change_x = enemie.change_x * 1.5 
+                    enemie.change_y = enemie.change_y * 1.5 
                 
             # if bullet is off screen, remove it.
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
@@ -221,7 +237,7 @@ class Menu(arcade.View):
      def on_draw(self):
         """ Draw the menu """
         arcade.start_render()
-        arcade.draw_text("Menu Screen - click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
+        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
                          arcade.color.BLUE, font_size=30, anchor_x="center")
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
