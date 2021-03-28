@@ -1,3 +1,5 @@
+from arcade.application import Window
+from arcade.particle import Particle
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
@@ -9,6 +11,8 @@ from solid_blocks import Solid_blocks
 import math
 import random
 from menu import Menu
+from particle import Particle
+from smoke import Smoke
 
 
 class MyGame(arcade.View):
@@ -36,6 +40,8 @@ class MyGame(arcade.View):
         self.enemies = Virus_cells().virus_cells
         self.walls_and_bricks = None
         self.bullet_list = None
+        self.explosions_list = None
+        self.score = 0 
 
         
         self.player_sprite = None
@@ -53,6 +59,7 @@ class MyGame(arcade.View):
         self.walls_and_bricks = arcade.SpriteList()
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -96,6 +103,10 @@ class MyGame(arcade.View):
         self.wall_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
+        self.explosions_list.draw()
+
+        arcade.draw_text(f"Score: {self.score}", int((constants.SCREEN_WIDTH / 2) - 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
+        
  
 
 
@@ -161,6 +172,7 @@ class MyGame(arcade.View):
         # example though.)
         self.physics_engine.update() 
         self.bullet_list.update()
+        self.explosions_list.update()
 
         for bullet in self.bullet_list:
 
@@ -182,9 +194,16 @@ class MyGame(arcade.View):
 
                 if brick_hit.health == 1:
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit3.png"))
-                    # brick_hit.texture_transform = "assets/images/mask.png"
-
+                    
                 if brick_hit.health == 0:
+                    for i in range(constants.PARTICLE_COUNT):
+                        particle = Particle(self.explosions_list)
+                        particle.position = brick_hit.position
+                        self.explosions_list.append(particle)
+                    smoke = Smoke(50)
+                    smoke.position = brick_hit.position
+                    self.explosions_list.append(smoke)
+                    
                     brick_hit.remove_from_sprite_lists()
 
             for hit in has_hit_solid_blocks:
@@ -208,8 +227,9 @@ class MyGame(arcade.View):
                     enemie.color = (255,0,0)   #Red
                     enemie.change_x = enemie.change_x * 1.5 
                     enemie.change_y = enemie.change_y * 1.5 
-                    
+
                 if enemie.health == 0:
+                    self.score += random.randint(2,5)
                     enemie.remove_from_sprite_lists()
             
             if (len(has_hit_bricks) > 0) or (len(has_hit_obstacles) > 0) or (len(has_hit_enemies) > 0):
@@ -226,6 +246,7 @@ class MyGame(arcade.View):
             if (len(virus_player_collision) > 0):
                 player.game_over_sound.play()
                 player.remove_from_sprite_lists()
+                
 
 
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
