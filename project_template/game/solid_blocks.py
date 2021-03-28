@@ -57,7 +57,7 @@ class Solid_blocks(arcade.Sprite):
             elif side == constants.SCREEN_HEIGHT:
                 wall.left = ref_point
                 wall.bottom = i
-
+            
             self.wall_list.append(wall)
             
 

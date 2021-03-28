@@ -25,6 +25,9 @@ class Destroyable_blocks(arcade.Sprite):
             block.left = random.randrange(128, constants.SCREEN_WIDTH - 128, 64)
             block.health = random.randrange(3,5)
             self.random_wall_list.append(block)
-
+    
+    def update(self):
+        self.append_texture("assets/images/mask.png")
+            
 
 
