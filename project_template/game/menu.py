@@ -1,6 +1,6 @@
 import arcade 
 import constants
-
+import __main__
 
 
 class Menu(arcade.View):
@@ -20,6 +20,6 @@ class Menu(arcade.View):
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
-        game_view = MyGame()
+        game_view = __main__.MyGame()
         game_view.setup()
         self.window.show_view(game_view)

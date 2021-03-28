@@ -37,6 +37,7 @@ class MyGame(arcade.View):
         self.all_obstacles = None
         self.destroyable_objects = None
         self.bullet_list = None
+
         
         self.player_sprite = None
         self.physics_engine = None
