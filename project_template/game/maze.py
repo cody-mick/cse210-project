@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
 
-        # -- Set up the walls
+
         # Create the bottom wall
         for x in range(0, constants.SCREEN_WIDTH, 64): #We can change 64 by something like (img_width/2 * SCALING)
             wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", constants.SPRITE_SCALING)

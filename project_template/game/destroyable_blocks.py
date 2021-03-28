@@ -19,11 +19,15 @@ class Destroyable_blocks(arcade.Sprite):
         self.random_wall_list = arcade.SpriteList()
 
         # for each row generate random blocks 
-        for row in range(128, constants.SCREEN_HEIGHT - 64, 64):
+        for i in range(0, 30):
             block = arcade.Sprite("assets/images/brickTextureWhite.png", constants.SPRITE_SCALING)
-            block.bottom = row
+            block.bottom = random.randrange(64, constants.SCREEN_HEIGHT - 64, 64)
             block.left = random.randrange(128, constants.SCREEN_WIDTH - 128, 64)
+            block.health = random.randrange(3,5)
             self.random_wall_list.append(block)
-
+    
+    def update(self):
+        self.append_texture("assets/images/mask.png")
+            
 
 
