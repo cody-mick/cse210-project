@@ -258,7 +258,7 @@ class MyGame(arcade.View):
 
         # Random 1 in 100 chance that we'll change from our old direction and
         # then re-aim toward the player
-        if random.randrange(0,1) == 0:
+        if random.randrange(0,350) == 0:
 
             # Get the position of the enemy in this case
             start_x = current.center_x
