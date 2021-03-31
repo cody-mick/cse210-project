@@ -1,7 +1,7 @@
 from PIL import Image
 import arcade
 from arcade.color import YELLOW
-stone_img = Image.open("assets/images/stoneCenter.png")
+stone_img = Image.open('project_template/game/assets/images/stoneCenter.png')
 img_width, img_height = stone_img.size 
 
 
