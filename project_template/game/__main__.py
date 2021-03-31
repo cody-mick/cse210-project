@@ -32,13 +32,13 @@ class MyGame(arcade.View):
         # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
-
     
         # Sprite lists
         self.coin_list = None
         self.wall_list = Solid_blocks().wall_list
         self.player_list = None
         self.brick_list = Destroyable_blocks().random_wall_list
+        self.virus = Virus_cells()
         self.enemies = Virus_cells().virus_cells
         self.walls_and_bricks = None
         self.bullet_list = None
@@ -61,15 +61,12 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           constants.SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", constants.SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
-    
-
 
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
@@ -96,7 +93,6 @@ class MyGame(arcade.View):
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
 
         # Draw all the sprites.
-     
         self.enemies.draw()
         self.brick_list.draw()
         self.wall_list.draw()
@@ -104,35 +100,35 @@ class MyGame(arcade.View):
         self.bullet_list.draw()
         self.explosions_list.draw()
 
+        # Draw the Score
         arcade.draw_text(f"Score: {self.score}", int((constants.SCREEN_WIDTH / 2) - 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
 
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.change_y = constants.MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.DOWN or key == arcade.key.S:
             self.player_sprite.change_y = -constants.MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -constants.MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = constants.MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if (key == arcade.key.UP) or (key == arcade.key.W) or (key == arcade.key.S) or (key == arcade.key.DOWN):
             self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif (key == arcade.key.LEFT) or (key == arcade.key.RIGHT) or (key == arcade.key.D) or (key == arcade.key.A):
             self.player_sprite.change_x = 0
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         "Called when the user presses the mouse"
 
-        # Create a bullet/lazer 
+        # Create a bullet/laser 
         bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
-
         bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
         bullet.sound.play()
 
@@ -161,18 +157,19 @@ class MyGame(arcade.View):
         # Add bullet to list 
         self.bullet_list.append(bullet)
 
-
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update on all sprites 
         self.physics_engine.update() 
         self.bullet_list.update()
         self.explosions_list.update()
-
+        self.enemies.update()
+        self.bullet_list.update()
+        
         for bullet in self.bullet_list:
 
+            # Check for all the collisions that the bullet will have
             has_hit_bricks = arcade.check_for_collision_with_list(bullet, self.brick_list)
             has_hit_obstacles = arcade.check_for_collision_with_list(bullet, self.walls_and_bricks)
             has_hit_solid_blocks = arcade.check_for_collision_with_list(bullet, self.wall_list)
@@ -189,7 +186,7 @@ class MyGame(arcade.View):
                 if brick_hit.health == 2:
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit2.png"))
 
-                if brick_hit.health == 1:
+                if brick_hit.health == 1: 
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit3.png"))
                     
                 if brick_hit.health == 0:
@@ -238,7 +235,7 @@ class MyGame(arcade.View):
 
         for player in self.player_list:
             virus_player_collision = arcade.check_for_collision_with_list(player, self.enemies)
-            wall_collision = arcade.check_for_collision_with_list(player, self.walls_and_bricks) # Come back to this later if time
+            # wall_collision = arcade.check_for_collision_with_list(player, self.walls_and_bricks) #Come back to this later if time
 
             if (len(virus_player_collision) > 0):
                 player.game_over_sound.play()
@@ -249,17 +246,46 @@ class MyGame(arcade.View):
 
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
         for enemy in self.enemies:
+            # if len(arcade.check_for_collision_with_list(enemy, self.walls_and_bricks)) > 0:
+            #     enemy.change_x *= -1
+            #     enemy.change_y *= -1
+            enemies_physics_engine = arcade.PhysicsEngineSimple(enemy, self.walls_and_bricks)  #Create basic physics engine with enemy and all walls and bricks    
+            enemies_physics_engine.update()   
+            self.follow_sprite(enemy, self.player_sprite)
+           
+    def follow_sprite(self, current, player_sprite):
+        """ This method will move the current sprite to the player sprite
+        Based off of the example given at https://arcade.academy/examples/sprite_follow_simple_2.html
+        """
+    
+        current.center_x += current.change_x
+        current.center_y += current.change_y
 
-            # updates each enemy
-            if len(arcade.check_for_collision_with_list(enemy, self.walls_and_bricks)) > 0:
-                enemy.change_x *= -1 
-                enemy.change_y *= -1 
-                        
+        # Random 1 in 100 chance that we'll change from our old direction and
+        # then re-aim toward the player
+        if random.randrange(0,1) == 0:
 
-        self.enemies.update()
-        self.bullet_list.update()
+            # Get the position of the enemy in this case
+            start_x = current.center_x
+            start_y = current.center_y
 
-                
+            # Get the destination of the enemy (the player_sprite's position)
+            dest_x = player_sprite.center_x
+            dest_y = player_sprite.center_y
+
+            x_diff = dest_x - start_x
+            y_diff = dest_y - start_y
+            angle = math.atan2(y_diff, x_diff)
+
+            # Calculate changes
+            current.change_x = math.cos(angle)# * random.randrange(1,2)
+            current.change_y = math.sin(angle)# * random.randrange(1,2)
+    
+    def write_score_file(self, score):
+        file = open("game_scores.txt", "a")
+        file.write(f"{str(score)}\n")
+        file.close()
+
 class Menu(arcade.View):
     """ Class that manages the 'menu' view. """
     
@@ -309,7 +335,6 @@ def main():
     menu_view = Menu()
     window.show_view(menu_view)
     arcade.run()
-
 
 if __name__ == "__main__":
     main() 

@@ -9,7 +9,7 @@ class Smoke(arcade.SpriteCircle):
 
 
     def __init__(self, size):
-        super().__init__(size, arcade.color.SMOKY_BLACK, soft = True)
+        super().__init__(size, arcade.color.GRAY_BLUE, soft = True)
         self.change_y = constants.SMOKE_RISE_RATE
         self.scale = constants.SMOKE_START_SCALE
 
