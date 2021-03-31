@@ -1,9 +1,11 @@
 from PIL import Image
 import arcade
 from arcade.color import YELLOW
-stone_img = Image.open('project_template/game/assets/images/stoneCenter.png')
-img_width, img_height = stone_img.size 
 
+stone_img = Image.open("project_template/game/assets/images/stoneCenter.png")
+img_width, img_height = stone_img.size 
+ 
+ 
 
 SPRITE_SCALING = 0.5
 BULLET_SCALING = 1
