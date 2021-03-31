@@ -15,11 +15,9 @@ from particle import Particle
 from smoke import Smoke
 
 
-
 class MyGame(arcade.View):
     """ Main application class. """
 
-    
     def __init__(self):
         """
         Initializer
@@ -44,8 +42,10 @@ class MyGame(arcade.View):
         self.bullet_list = None
         self.explosions_list = None
         self.score = 0 
+        
         self.player_sprite = None
         self.physics_engine = None
+
         self.background = None
         self.width = constants.SCREEN_WIDTH
         self.height = constants.SCREEN_HEIGHT
@@ -74,12 +74,8 @@ class MyGame(arcade.View):
         # self.walls_and_bricks.extend(self.enemies)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.walls_and_bricks)
 
-                    
-        for enemy in self.enemies:
-            enemy.physics_engine = arcade.PhysicsEngineSimple(enemy, self.walls_and_bricks)   
-
-        # Set the background color
-        self.background = arcade.load_texture("assets/images/Covidman_background_lvl1.jpg")
+        # Set the background color/image
+        self.background = arcade.load_texture("assets/images/Covidman_background_lvl1.jpeg")
 
     def on_draw(self):
         """
@@ -102,8 +98,7 @@ class MyGame(arcade.View):
 
         # Draw the Score
         arcade.draw_text(f"Score: {self.score}", int((constants.SCREEN_WIDTH / 2) - 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
-
-
+    
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -240,10 +235,10 @@ class MyGame(arcade.View):
             if (len(virus_player_collision) > 0):
                 player.game_over_sound.play()
                 player.remove_from_sprite_lists()
+                self.write_score_file(self.score)
                 game_over_view = GameOver()
-                self.window.show_view(game_over_view)                   
-
-
+                self.window.show_view(game_over_view)
+ 
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
         for enemy in self.enemies:
             # if len(arcade.check_for_collision_with_list(enemy, self.walls_and_bricks)) > 0:
@@ -263,7 +258,7 @@ class MyGame(arcade.View):
 
         # Random 1 in 100 chance that we'll change from our old direction and
         # then re-aim toward the player
-        if random.randrange(0,1) == 0:
+        if random.randrange(0,350) == 0:
 
             # Get the position of the enemy in this case
             start_x = current.center_x
@@ -287,47 +282,59 @@ class MyGame(arcade.View):
         file.close()
 
 class Menu(arcade.View):
-    """ Class that manages the 'menu' view. """
-    
-    def on_show(self):
+     """ Class that manages the 'menu' view. """
+
+     def on_show(self):
         """ Called when switching to this view"""
+        # arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
         arcade.set_background_color(arcade.color.WHITE)
 
-    def on_draw(self):
+     def on_draw(self):
         """ Draw the menu """
         arcade.start_render()
-        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                            arcade.color.BLUE, font_size=30, anchor_x="center")
-        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/Covidman_menu.jpg"))
-    
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.BLUE, font_size=30, anchor_x="center")
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/3839350.jpg"))
+
+     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
         game_view = MyGame()
         game_view.setup()
         self.window.show_view(game_view)
-
 
 class GameOver(arcade.View):
-    """ Class that manages the 'menu' view. """
+     """ Class that manages the 'menu' view. """
 
-    def on_show(self):
+     def on_show(self):
         """ Called when switching to this view"""
+        # arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
         arcade.set_background_color(arcade.color.WHITE)
 
-    def on_draw(self):
+     def on_draw(self):
         """ Draw the menu """
 
-        arcade.start_render()
-        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/Covidman_game_over.jpg"))
-        arcade.draw_text(f"Score: {MyGame().score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3,
-                    arcade.color.WHITE, font_size=30, anchor_x="center")
+        file = open("game_scores.txt", "r")
+        lines = file.readlines()
         
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        scores_list = []
+        
+        for i in lines:
+            clear = i.rstrip("\n")
+            score = int(clear)
+            scores_list.append(score)
+
+        last_score = scores_list[-1]
+        high_score = max(scores_list)
+
+        arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/game_over.jpg"))
+        arcade.draw_text(f"Score: {last_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3, arcade.color.WHITE, font_size=30, anchor_x="center")
+        arcade.draw_text(f"High score: {high_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3 - 40, arcade.color.WHITE, font_size=30, anchor_x="center")        
+
+     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
         game_view = MyGame()
         game_view.setup()
         self.window.show_view(game_view)
-
 
 def main():
     """ Main method """
