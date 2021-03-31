@@ -281,8 +281,6 @@ class MyGame(arcade.View):
         file.write(f"{str(score)}\n")
         file.close()
 
-
-
 class Menu(arcade.View):
      """ Class that manages the 'menu' view. """
 
@@ -294,9 +292,8 @@ class Menu(arcade.View):
      def on_draw(self):
         """ Draw the menu """
         arcade.start_render()
+        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.BLUE, font_size=30, anchor_x="center")
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/3839350.jpg"))
-        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                     arcade.color.BLUE, font_size=30, anchor_x="center")
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
@@ -331,8 +328,7 @@ class GameOver(arcade.View):
         arcade.start_render()
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/game_over.jpg"))
         arcade.draw_text(f"Score: {last_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3, arcade.color.WHITE, font_size=30, anchor_x="center")
-        arcade.draw_text(f"High score: {high_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3 - 40, arcade.color.WHITE, font_size=30, anchor_x="center")
-        
+        arcade.draw_text(f"High score: {high_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3 - 40, arcade.color.WHITE, font_size=30, anchor_x="center")        
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
@@ -345,7 +341,6 @@ def main():
     window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
     menu_view = Menu()
     window.show_view(menu_view)
-    # window.setup()
     arcade.run()
 
 if __name__ == "__main__":
