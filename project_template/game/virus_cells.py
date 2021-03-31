@@ -18,37 +18,12 @@ class Virus_cells(arcade.Sprite):
     def setup(self):
         # Set up the cells
         self.virus_cells = arcade.SpriteList()
-        
 
-        # Horizontal enemies
-        # for each iteration create an enemy 
-        # virus_bottom_position = [128, 256, 320, 448]
-        # for i in range(4): # 3 enemies in this case
-        #     cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
-        #     cell.center_y = virus_bottom_position[i]
-        #     cell.center_x = constants.SCREEN_WIDTH - 128
-        #     cell.change_x = random.randrange(-1,-3,-1)
-        #     cell.change_y = 0
-        #     cell.health = 4
-        #     cell.color = (0,204,0) #Green
-        #     self.virus_cells.append(cell)
-
-        # # Vertical enemies
-        # # for each iteration create an enemy 
-        # virus_left_position = [192, 320, 448, 576]
-        # for i in range(4): # 3 enemies in this case
-        #     cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
-        #     cell.bottom = constants.SCREEN_HEIGHT - 128
-        #     cell.left = virus_left_position[i]
-        #     cell.change_x = 0 # x, y
-        #     cell.change_y = random.randrange(-1,-3,-1)
-        #     cell.health = 4
-        #     cell.color = (0,204,0) #Green
-        #     self.virus_cells.append(cell) 
         virus_left_position = [192, 320, 448, 576]
         solid_blocks_position = []
         for sprite in Solid_blocks().wall_list:
             solid_blocks_position.append(sprite.center_x)
+            
         for i in range(4):
             # Create the coin instance
             # Coin image from kenney.nl

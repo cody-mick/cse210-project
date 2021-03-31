@@ -182,7 +182,7 @@ class MyGame(arcade.View):
                 if brick_hit.health == 2:
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit2.png"))
 
-                if brick_hit.health == 1:
+                if brick_hit.health == 1: 
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit3.png"))
                     
                 if brick_hit.health == 0:
