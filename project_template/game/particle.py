@@ -52,7 +52,7 @@ class Particle(arcade.SpriteCircle):
             self.change_y -= constants.PARTICLE_GRAVITY
 
             # Should we sparkle this?
-            if random.random() <= constants.PARTICLE_SPARKLE_CHANCE:
+            if random.random() == constants.PARTICLE_SPARKLE_CHANCE:
                 self.alpha = 255
                 self.texture = arcade.make_circle_texture(self.width, arcade.color.WHITE)
             else:

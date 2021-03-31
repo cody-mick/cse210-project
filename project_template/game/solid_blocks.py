@@ -34,7 +34,7 @@ class Solid_blocks(arcade.Sprite):
         self.create_wall_list(constants.SCREEN_HEIGHT, int(stone_height), constants.SCREEN_WIDTH - stone_height)
 
         # -- Set up the solid walls 
-        self.create_wall_list(constants.SCREEN_WIDTH, stone_width * 2, int(constants.SCREEN_HEIGHT - stone_height * 3))
+        self.create_wall_list(constants.SCREEN_WIDTH, stone_width * 2, int(constants.SCREEN_HEIGHT - stone_height * 4                                                                                                           ))
         self.create_wall_list(constants.SCREEN_WIDTH, stone_width * 2, int(stone_height * 3))
 
 

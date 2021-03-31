@@ -31,7 +31,7 @@ PARTICLE_COLORS = [arcade.color.RED,
                    arcade.color.LAVA,
                    arcade.color.ORANGE_PEEL,
                    arcade.color.YELLOW]
-PARTICLE_SPARKLE_CHANCE = 0.02 # Chance we'll flip the texture to white and make it 'sparkle'
+PARTICLE_SPARKLE_CHANCE = 1 # Chance we'll flip the texture to white and make it 'sparkle'
 
 SMOKE_START_SCALE = 0.25
 SMOKE_EXPANSION_RATE = 0.03
