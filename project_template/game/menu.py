@@ -19,10 +19,9 @@ class Menu(arcade.View):
       arcade.set_background_color(arcade.color.WHITE)
 
    def on_draw(self):
-          """ Draw the menu """
+      """ Draw the menu """
       arcade.start_render()
-      arcade.draw_text("Menu Screen - click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                        arcade.color.BLUE, font_size=30, anchor_x="center")
+      arcade.draw_text("Menu Screen - click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.BLUE, font_size=30, anchor_x="center")
       #arcade.load_texture("project_template/game/assets/images/Covidman_menu.jpg")
 
       arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
