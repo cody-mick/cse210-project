@@ -19,7 +19,7 @@ class Menu(arcade.View):
       arcade.set_background_color(arcade.color.WHITE)
 
    def on_draw(self):
-          """ Draw the menu """
+      """ Draw the menu """
       arcade.start_render()
       arcade.draw_text("Menu Screen - click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
                         arcade.color.BLUE, font_size=30, anchor_x="center")
