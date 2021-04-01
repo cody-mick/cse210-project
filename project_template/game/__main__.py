@@ -64,9 +64,9 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", constants.SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 64
+        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
+        self.player_sprite.center_x = 64
+        self.player_sprite.center_y = 108
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
