@@ -4,6 +4,8 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
 import os
+
+from pyglet.media.player import Player
 import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
@@ -45,6 +47,7 @@ class MyGame(arcade.View):
         
         self.player_sprite = None
         self.physics_engine = None
+        self.volume = 0.05
 
         self.background = None
         self.width = constants.SCREEN_WIDTH
@@ -123,9 +126,9 @@ class MyGame(arcade.View):
         "Called when the user presses the mouse"
 
         # Create a bullet/laser 
-        bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
+        bullet = arcade.Sprite("assets/images/laserBlue01.png", constants.BULLET_SCALING)
         bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
-        bullet.sound.play()
+        bullet.sound.play(volume = self.volume)
 
         # Position the bullet at the players location
         start_x = self.player_sprite.center_x
@@ -172,7 +175,7 @@ class MyGame(arcade.View):
 
             for brick_hit in has_hit_bricks:
                 brick_hit.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
-                brick_hit.explosion_sound.play()
+                brick_hit.explosion_sound.play(volume = self.volume)
                 brick_hit.health -= 1
 
                 if brick_hit.health == 3:
