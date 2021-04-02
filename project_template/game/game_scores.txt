@@ -49,4 +49,13 @@
 6
 5
 0
+<<<<<<< Updated upstream
 14
+=======
+9
+10
+2
+20
+8
+16
+>>>>>>> Stashed changes
