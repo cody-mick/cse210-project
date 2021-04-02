@@ -4,6 +4,8 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
 import os
+
+from pyglet.media.player import Player
 import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
@@ -45,6 +47,7 @@ class MyGame(arcade.View):
         
         self.player_sprite = None
         self.physics_engine = None
+        self.volume = 0.05
 
         self.background = None
         self.width = constants.SCREEN_WIDTH
@@ -61,10 +64,9 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           constants.SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 64
+        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
+        self.player_sprite.center_x = 64
+        self.player_sprite.center_y = 108
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
@@ -124,9 +126,9 @@ class MyGame(arcade.View):
         "Called when the user presses the mouse"
 
         # Create a bullet/laser 
-        bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
+        bullet = arcade.Sprite("assets/images/laserBlue01.png", constants.BULLET_SCALING)
         bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
-        bullet.sound.play()
+        bullet.sound.play(volume = self.volume)
 
         # Position the bullet at the players location
         start_x = self.player_sprite.center_x
@@ -173,7 +175,7 @@ class MyGame(arcade.View):
 
             for brick_hit in has_hit_bricks:
                 brick_hit.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
-                brick_hit.explosion_sound.play()
+                brick_hit.explosion_sound.play(volume = self.volume)
                 brick_hit.health -= 1
 
                 if brick_hit.health == 3:
@@ -182,7 +184,7 @@ class MyGame(arcade.View):
                 if brick_hit.health == 2:
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit2.png"))
 
-                if brick_hit.health == 1:
+                if brick_hit.health == 1: 
                     brick_hit.texture = (arcade.load_texture("assets/images/brickTextureWhite Hit3.png"))
                     
                 if brick_hit.health == 0:
@@ -236,6 +238,7 @@ class MyGame(arcade.View):
             if (len(virus_player_collision) > 0):
                 player.game_over_sound.play()
                 player.remove_from_sprite_lists()
+                self.write_score_file(self.score)
                 game_over_view = GameOver()
                 self.window.show_view(game_over_view)
  
@@ -247,7 +250,7 @@ class MyGame(arcade.View):
             enemies_physics_engine = arcade.PhysicsEngineSimple(enemy, self.walls_and_bricks)  #Create basic physics engine with enemy and all walls and bricks    
             enemies_physics_engine.update()   
             self.follow_sprite(enemy, self.player_sprite)
-       
+           
     def follow_sprite(self, current, player_sprite):
         """ This method will move the current sprite to the player sprite
         Based off of the example given at https://arcade.academy/examples/sprite_follow_simple_2.html
@@ -258,7 +261,7 @@ class MyGame(arcade.View):
 
         # Random 1 in 100 chance that we'll change from our old direction and
         # then re-aim toward the player
-        if random.randrange(0,100) == 0:
+        if random.randrange(0,350) == 0:
 
             # Get the position of the enemy in this case
             start_x = current.center_x
@@ -275,7 +278,12 @@ class MyGame(arcade.View):
             # Calculate changes
             current.change_x = math.cos(angle)# * random.randrange(1,2)
             current.change_y = math.sin(angle)# * random.randrange(1,2)
-                
+    
+    def write_score_file(self, score):
+        file = open("game_scores.txt", "a")
+        file.write(f"{str(score)}\n")
+        file.close()
+
 class Menu(arcade.View):
      """ Class that manages the 'menu' view. """
 
@@ -287,9 +295,8 @@ class Menu(arcade.View):
      def on_draw(self):
         """ Draw the menu """
         arcade.start_render()
+        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.BLUE, font_size=30, anchor_x="center")
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/3839350.jpg"))
-        arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                     arcade.color.BLUE, font_size=30, anchor_x="center")
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
@@ -307,8 +314,24 @@ class GameOver(arcade.View):
 
      def on_draw(self):
         """ Draw the menu """
+
+        file = open("game_scores.txt", "r")
+        lines = file.readlines()
+        
+        scores_list = []
+        
+        for i in lines:
+            clear = i.rstrip("\n")
+            score = int(clear)
+            scores_list.append(score)
+
+        last_score = scores_list[-1]
+        high_score = max(scores_list)
+
         arcade.start_render()
         arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/game_over.jpg"))
+        arcade.draw_text(f"Score: {last_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3, arcade.color.WHITE, font_size=30, anchor_x="center")
+        arcade.draw_text(f"High score: {high_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3 - 40, arcade.color.WHITE, font_size=30, anchor_x="center")        
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
@@ -321,7 +344,6 @@ def main():
     window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
     menu_view = Menu()
     window.show_view(menu_view)
-    # window.setup()
     arcade.run()
 
 if __name__ == "__main__":
