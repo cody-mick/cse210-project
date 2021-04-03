@@ -27,7 +27,7 @@ class Destroyable_blocks(arcade.Sprite):
             block.bottom = random.randrange(64, constants.SCREEN_HEIGHT - 64, 64)
             block.left = random.randrange(128, constants.SCREEN_WIDTH - 128, 64)
             block.health = random.randrange(3,5)
-            if (block.left not in virus_left_position) or (block.bottom not in virus_bottom_position):
+            if (block.left not in virus_left_position) or (block.bottom not in virus_bottom_position) or (block.center_x != 100) or (block.center_y != 80):
                 self.random_wall_list.append(block)
     
     def update(self):

@@ -4,6 +4,8 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
 import os
+from arcade.texture import load_texture
+from pyglet.media.player import Player
 import constants 
 from destroyable_blocks import Destroyable_blocks
 from virus_cells import Virus_cells
@@ -61,9 +63,9 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", constants.SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 64
+        self.player_sprite = arcade.Sprite("assets/images/mask.png", constants.SPRITE_SCALING)
+        self.player_sprite.center_x = 100
+        self.player_sprite.center_y = 80
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
@@ -172,6 +174,7 @@ class MyGame(arcade.View):
 
             for brick_hit in has_hit_bricks:
                 brick_hit.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
+                brick_hit.explosion_sound.set_volume(0, Player)
                 brick_hit.explosion_sound.play()
                 brick_hit.health -= 1
 
@@ -197,6 +200,7 @@ class MyGame(arcade.View):
 
             for hit in has_hit_solid_blocks:
                 hit.sound = arcade.Sound("assets/sounds/hurt2.wav")
+        
                 hit.sound.play()
 
             for enemie in has_hit_enemies:
