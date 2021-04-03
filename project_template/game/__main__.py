@@ -15,6 +15,8 @@ import random
 from menu import Menu
 from particle import Particle
 from smoke import Smoke
+from mask import Mask
+
 
 
 class MyGame(arcade.View):
@@ -35,21 +37,24 @@ class MyGame(arcade.View):
     
         # Sprite lists
         self.coin_list = None
-        self.wall_list = Solid_blocks().wall_list
+        self.wall_list = None
         self.player_list = None
         self.brick_list = Destroyable_blocks().random_wall_list
         self.virus = Virus_cells()
         self.enemies = Virus_cells().virus_cells
+        self.mask_list = Mask().mask_list
         self.walls_and_bricks = None
         self.bullet_list = None
         self.explosions_list = None
         self.score = 0 
+        self.mask_count = Mask().mask_count
         
         self.player_sprite = None
         self.physics_engine = None
-        self.volume = 0.05
+        self.volume = 0.4
 
         self.background = None
+        self.background_music = None
         self.width = constants.SCREEN_WIDTH
         self.height = constants.SCREEN_HEIGHT
 
@@ -62,6 +67,7 @@ class MyGame(arcade.View):
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
+        self.wall_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
@@ -71,6 +77,26 @@ class MyGame(arcade.View):
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
 
+        self.background_music = arcade.Sound("assets/sounds/Lonely thoughts.mp3")
+        self.background_music.play(volume = 0.6)
+    
+
+        # --- Load in a map from the tiled editor ---
+
+        # Name of map file to load
+        map_name = ":resources:tmx_maps/map.tmx"
+        # Name of the layer in the file that has our platforms/walls
+        platforms_layer_name = 'SolidBlocks'
+
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        # -- Platforms
+        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
+                                                      layer_name=platforms_layer_name,
+                                                      scaling=constants.TILE_SCALING,
+                                                      use_spatial_hash=True)
+
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
         self.walls_and_bricks.extend(self.brick_list)
@@ -79,6 +105,7 @@ class MyGame(arcade.View):
 
         # Set the background color/image
         self.background = arcade.load_texture("assets/images/Covidman_background_lvl1.jpeg")
+        
 
     def on_draw(self):
         """
@@ -98,10 +125,12 @@ class MyGame(arcade.View):
         self.player_list.draw()
         self.bullet_list.draw()
         self.explosions_list.draw()
+        self.mask_list.draw()
 
         # Draw the Score
         arcade.draw_text(f"Score: {self.score}", int((constants.SCREEN_WIDTH / 2) - 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
-    
+        arcade.draw_text(f"Masks left: {self.mask_count}", int((constants.SCREEN_WIDTH / 2) + 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -164,6 +193,7 @@ class MyGame(arcade.View):
         self.explosions_list.update()
         self.enemies.update()
         self.bullet_list.update()
+        self.mask_list.update()
         
         for bullet in self.bullet_list:
 
@@ -233,10 +263,17 @@ class MyGame(arcade.View):
 
         for player in self.player_list:
             virus_player_collision = arcade.check_for_collision_with_list(player, self.enemies)
+            mask_player_collision = arcade.check_for_collision_with_list(player, self.mask_list)
             # wall_collision = arcade.check_for_collision_with_list(player, self.walls_and_bricks) #Come back to this later if time
+            if (len(mask_player_collision) > 0):
+                for mask in mask_player_collision:
+                    mask.remove_from_sprite_lists()
+                    self.mask_count -= 1
+                    self.score += random.randint(3,5)
+
 
             if (len(virus_player_collision) > 0):
-                player.game_over_sound.play()
+                player.game_over_sound.play(volume= self.volume)
                 player.remove_from_sprite_lists()
                 self.write_score_file(self.score)
                 game_over_view = GameOver()
