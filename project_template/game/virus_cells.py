@@ -19,64 +19,25 @@ class Virus_cells(arcade.Sprite):
         # Set up the cells
         self.virus_cells = arcade.SpriteList()
 
-        virus_left_position = [192, 320, 448, 576]
-        solid_blocks_position = []
-        for sprite in Solid_blocks().wall_list:
-            solid_blocks_position.append(sprite.center_x)
-            
-        for i in range(4):
-            # Create the coin instance
-            # Coin image from kenney.nl
-            cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
+        # --- Load in a map from the tiled editor ---
 
-            # Position the coin
-            cell.bottom = constants.SCREEN_HEIGHT - 128
-            cell.left = virus_left_position[i]
+        # Name of map file to load
+        map_name = "assets/tmx_maps/map1.tmx"
+        # Name of the layer in the file that has our enemies
+        enemies_layer_name = 'Enemies'
+
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        # -- Platforms
+        self.virus_cells = arcade.tilemap.process_layer(map_object=my_map,
+                                                      layer_name=enemies_layer_name,
+                                                      scaling=constants.TILE_SCALING,
+                                                      use_spatial_hash=True)
+
+        for cell in self.virus_cells:
             cell.health = 4
             cell.color = (0, 204, 0) # Green
-
-            # Add the coin to the lists
-            
-            if cell.position not in solid_blocks_position:
-                self.virus_cells.append(cell)
-        
-        virus_bottom_position = [128, 256, 320, 448]
-        for i in range(4):
-            # Create the coin instance
-            # Coin image from kenney.nl
-            cell = arcade.Sprite("assets/images/saw.png", constants.SPRITE_SCALING)
-
-            # Position the coin
-            cell.center_y = virus_bottom_position[i]
-            cell.center_x = constants.SCREEN_WIDTH - 128
-            cell.health = 4
-            cell.color = (0, 204, 0) # Green
-
-            # Add the coin to the lists
-            if cell.position not in solid_blocks_position:
-                self.virus_cells.append(cell)
-
-
-
-
-
-
-    
-
-
-# class FlyingSprite(arcade.Sprite):
-#     """Base class for all flying sprites
-#     Flying sprites include enemies and clouds
-#     """
-
-#     def update(self):
-#         """Update the position of the sprite
-#         When it moves off screen to the left, remove it
-#         """
-
-#         # Move the sprite
-#         super().update()
-
 
 
     
