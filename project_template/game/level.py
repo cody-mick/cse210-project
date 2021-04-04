@@ -11,7 +11,8 @@ class Level:
 
     def create_boundries(self):
         # Setup the boundries of the level
-        
+        pass
+
 
 
 
