@@ -17,7 +17,7 @@ SCREEN_HEIGHT = 954
 SCREEN_TITLE = "Sprite Move with Walls Example"
 TILE_SCALING = 0.44
 
-MOVEMENT_SPEED = 5 
+MOVEMENT_SPEED = 7 
 BULLET_SPEED = 10
 
 # Explosions

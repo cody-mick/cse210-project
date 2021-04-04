@@ -22,7 +22,7 @@ class Mask(arcade.Sprite):
         # --- Load in a map from the tiled editor ---
 
         # Name of map file to load
-        map_name = ":resources:tmx_maps/map.tmx"
+        map_name = "assets/tmx_maps/map1.tmx"
         # Name of the layer in the file that has our platforms/walls
         mask_layer_name = 'Masks'
 
