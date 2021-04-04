@@ -4,7 +4,6 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
 import os
-from arcade.texture import load_texture
 from pyglet.media.player import Player
 import constants 
 from destroyable_blocks import Destroyable_blocks
@@ -47,6 +46,7 @@ class MyGame(arcade.View):
         
         self.player_sprite = None
         self.physics_engine = None
+        self.volume = 0.05
 
         self.background = None
         self.width = constants.SCREEN_WIDTH
@@ -63,9 +63,9 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("assets/images/mask.png", constants.SPRITE_SCALING)
-        self.player_sprite.center_x = 100
-        self.player_sprite.center_y = 80
+        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.1)
+        self.player_sprite.center_x = 64
+        self.player_sprite.center_y = 108
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
@@ -125,9 +125,9 @@ class MyGame(arcade.View):
         "Called when the user presses the mouse"
 
         # Create a bullet/laser 
-        bullet = arcade.Sprite("assets/images/laserRed01 copy.png", constants.BULLET_SCALING)
+        bullet = arcade.Sprite("assets/images/laserBlue01.png", constants.BULLET_SCALING)
         bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
-        bullet.sound.play()
+        bullet.sound.play(volume = self.volume)
 
         # Position the bullet at the players location
         start_x = self.player_sprite.center_x
@@ -174,8 +174,7 @@ class MyGame(arcade.View):
 
             for brick_hit in has_hit_bricks:
                 brick_hit.explosion_sound = arcade.Sound("assets/sounds/explosion2.wav")
-                brick_hit.explosion_sound.set_volume(0, Player)
-                brick_hit.explosion_sound.play()
+                brick_hit.explosion_sound.play(volume = self.volume)
                 brick_hit.health -= 1
 
                 if brick_hit.health == 3:
