@@ -5,7 +5,7 @@ class Player(arcade.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.scale = 0.18
+        self.scale = 0.13
         self.textures = []
 
         # Load a left facing texture and a right facing texture.
@@ -28,4 +28,3 @@ class Player(arcade.Sprite):
             self.texture = self.textures[constants.TEXTURE_RIGHT]
         elif self.change_x > 0:
             self.texture = self.textures[constants.TEXTURE_LEFT]
-

@@ -11,7 +11,7 @@ TEXTURE_RIGHT = 1
 
 
 SPRITE_SCALING = 0.5
-BULLET_SCALING = 1
+BULLET_SCALING = 0.7
 stone_img_width = int(img_width * SPRITE_SCALING)
 stone_img_height = int(img_height * SPRITE_SCALING)
 

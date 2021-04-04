@@ -67,7 +67,7 @@ class MyGame(arcade.View):
         # Set up the player
         self.player_sprite = Player()
         self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 108
+        self.player_sprite.center_y = 80
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
         self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
         self.player_list.append(self.player_sprite)
