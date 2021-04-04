@@ -5,7 +5,10 @@ from arcade.color import YELLOW
 stone_img = Image.open("assets/images/stoneCenter.png")
 img_width, img_height = stone_img.size 
  
- 
+# Index of textures, first element faces left, second faces right
+TEXTURE_LEFT = 0
+TEXTURE_RIGHT = 1
+
 
 SPRITE_SCALING = 0.5
 BULLET_SCALING = 1

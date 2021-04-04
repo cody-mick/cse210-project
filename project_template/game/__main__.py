@@ -15,6 +15,7 @@ import random
 from menu import Menu
 from particle import Particle
 from smoke import Smoke
+from player import Player
 
 
 class MyGame(arcade.View):
@@ -64,7 +65,7 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
+        self.player_sprite = Player()
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 108
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
@@ -164,6 +165,7 @@ class MyGame(arcade.View):
         self.explosions_list.update()
         self.enemies.update()
         self.bullet_list.update()
+        self.player_list.update()
         
         for bullet in self.bullet_list:
 
