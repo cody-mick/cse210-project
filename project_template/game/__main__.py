@@ -163,6 +163,8 @@ class MyGame(arcade.View):
         self.explosions_list.update()
         self.enemies.update()
         self.mask_list.update()
+        self.player_list.update_animation(delta_time)
+
         
         for bullet in self.bullet_list:
 
@@ -256,7 +258,7 @@ class MyGame(arcade.View):
                     virus.remove_from_sprite_lists()
                 self.player_health -= 1
                 if self.player_health == 1:
-                    self.player_sprite.color = (0,0,0)
+                    self.player_sprite.color = (255,255,255)
                 if self.player_health == 0:
                     player.game_over_sound.play(volume= self.volume)
                     # self.background_music.stop(self.background_music)

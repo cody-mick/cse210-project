@@ -42,6 +42,6 @@ class Mask(arcade.Sprite):
     def generate_powers(self):
         # This method is in charge of deciding which power ability the player will be able to use once it collects a mask
         powers = ["machine_gun", "extra_health"]
-        return powers[random.randint(0,2)]
+        return powers[random.randint(0,1)]
             
             
