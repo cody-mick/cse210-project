@@ -1,9 +1,9 @@
 # GAME ABOUT COVID 
-[a description of the program]
+You are a robot and you must eradicate the virus for the human race! It will destroy you with a single touch unless you have some power ups so watch out!
 
 ## Getting Started
 ---
-[how to install and run the program]
+Navigate to cse210-project/project_template/game and run the __main__.py file.
 
 ## Project Structure
 ---
@@ -31,3 +31,5 @@ Cody Mickelsen - cmick@byui.edu
 Sam Cummings - 
 Erick Vega - 
 Trent Patton - 
+
+## How to run:

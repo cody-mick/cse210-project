@@ -4,7 +4,6 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 import arcade
 import os
-
 from pyglet.media.player import Player
 import constants 
 from destroyable_blocks import Destroyable_blocks
@@ -15,8 +14,10 @@ import random
 from particle import Particle
 from smoke import Smoke
 from mask import Mask
+from player import Player
+from bullet import Bullet
+import time
 from player_character import PlayerCharacter
-
 
 class MyGame(arcade.View):
     """ Main application class. """
@@ -35,55 +36,56 @@ class MyGame(arcade.View):
         os.chdir(file_path)
     
         # Sprite lists
+        self.player = Player()
         self.coin_list = None
         self.wall_list = Solid_blocks().wall_list
-        self.player_list = None
+        self.player_list = self.player.player_list
+        self.player_sprite = self.player.player_sprite
+        self.player_health = self.player.player_health
         self.brick_list = Destroyable_blocks().random_wall_list
         self.virus = Virus_cells()
         self.enemies = Virus_cells().virus_cells
+        self.mask = Mask()
         self.mask_list = Mask().mask_list
+        self.power = None
         self.walls_and_bricks = None
-        self.bullet_list = None
         self.explosions_list = None
         self.score = 0 
         self.mask_count = Mask().mask_count
-        self.player_sprite = None
         self.physics_engine = None
         self.volume = 0.4
         self.background = None
         self.background_music = None
         self.width = constants.SCREEN_WIDTH
         self.height = constants.SCREEN_HEIGHT
+        self.bullet_list = None
+        self.shotgun = False
+        self.mouse_clicks = 0 
+        self.play_music = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.player_list = arcade.SpriteList()
         self.walls_and_bricks = arcade.SpriteList()
         self.destroyable_objects = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
- 
-        # Set up the player
-        self.player_sprite = PlayerCharacter()
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 80
-        self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
-        self.player_sprite.game_over_sound = arcade.Sound("assets/sounds/gameover4.wav")
-        self.player_list.append(self.player_sprite)
+        self.bullet_list = arcade.SpriteList()
 
+        
         self.background_music = arcade.Sound("assets/sounds/Lonely thoughts.mp3")
-        self.background_music.play(volume = 0.3)
+        self.play_music = self.background_music.play(volume = 0.3)
+
 
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
         self.walls_and_bricks.extend(self.brick_list)
         # self.walls_and_bricks.extend(self.enemies)
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.walls_and_bricks)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player.player_sprite, self.walls_and_bricks)
 
         # Set the background color/image
         self.background = arcade.load_texture("assets/images/Covidman_background_lvl1.jpeg")
+        # self.background_music = arcade.Sound("assets/sounds/music_test.mp3")
         
 
     def on_draw(self):
@@ -103,12 +105,15 @@ class MyGame(arcade.View):
         self.wall_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
+    
+
         self.explosions_list.draw()
         self.mask_list.draw()
 
         # Draw the Score
         arcade.draw_text(f"Score: {self.score}", 64, 32, arcade.color.BLUE_SAPPHIRE, font_size=30, font_name= "Arial", bold= True)
         arcade.draw_text(f"Masks left: {self.mask_count}", (constants.SCREEN_WIDTH-256), 32, arcade.color.BLUE_SAPPHIRE, font_size=30,font_name= "Arial", bold= True)
+        arcade.draw_text(f"Player Health: {self.player_health}", (constants.SCREEN_WIDTH/2 - 128), 32, arcade.color.BLUE_SAPPHIRE, font_size=30,font_name= "Arial", bold= True)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -132,36 +137,24 @@ class MyGame(arcade.View):
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         "Called when the user presses the mouse"
-
-        # Create a bullet/laser 
-        bullet = arcade.Sprite("assets/images/laserBlue01.png", constants.BULLET_SCALING)
-        bullet.sound = arcade.Sound("assets/sounds/laser2.wav")
-        bullet.sound.play(volume = self.volume)
-
-        # Position the bullet at the players location
-        start_x = self.player_sprite.center_x
-        start_y = self.player_sprite.center_y
-        bullet.center_x = start_x
-        bullet.center_y = start_y
-
-        # get from the mouse the destination location (x and y)
-        dest_x = x
-        dest_y = y
-
-        # get the bullet to the destination
-        x_diff = dest_x - start_x
-        y_diff = dest_y - start_y
-        angle = math.atan2(y_diff, x_diff) # retruns the arc tangent of a number (x) between -pi/2 and pi/2 (think back to pre-calculus)
-
-        # Angle the bullet/laser
-        bullet.angle = math.degrees(angle)
-
-        # Now with the angle, calculate our change_x and change_y 
-        bullet.change_x = math.cos(angle) * constants.BULLET_SPEED 
-        bullet.change_y = math.sin(angle) * constants.BULLET_SPEED 
-
-        # Add bullet to list 
-        self.bullet_list.append(bullet)
+        start = time.time()
+        if self.shotgun == True:
+            for i in range(3):
+                b = Bullet(self.player_sprite.center_x, self.player_sprite.center_y,x -(i * 30), y-(i * 40))
+                for l in b.bullet_list:
+                    l.color = (255,0,0)
+                    self.bullet_list.append(l)
+            self.mouse_clicks += 1
+            if self.mouse_clicks > 4:
+                self.mouse_clicks = 0
+                self.shotgun = False
+            
+        else:
+            b = Bullet(self.player_sprite.center_x, self.player_sprite.center_y, x, y)
+            for i in b.bullet_list:
+                self.bullet_list.append(i)
+            
+        
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -171,7 +164,6 @@ class MyGame(arcade.View):
         self.bullet_list.update()
         self.explosions_list.update()
         self.enemies.update()
-        self.bullet_list.update()
         self.mask_list.update()
         self.player_list.update_animation(delta_time)
 
@@ -211,6 +203,7 @@ class MyGame(arcade.View):
 
             for hit in has_hit_solid_blocks:
                 hit.sound = arcade.Sound("assets/sounds/hurt2.wav")
+        
                 hit.sound.play()
 
             for enemie in has_hit_enemies:
@@ -249,16 +242,33 @@ class MyGame(arcade.View):
             if (len(mask_player_collision) > 0):
                 for mask in mask_player_collision:
                     mask.remove_from_sprite_lists()
+                    self.power = self.mask.generate_powers()
+
+                    if self.power == "extra_health":
+                        self.player_health += 1
+                        self.player_sprite.color = (0,191,255)
+
+                    elif self.power == "machine_gun":
+                        self.shotgun = True
+
                     self.mask_count -= 1
                     self.score += random.randint(3,5)
 
 
             if (len(virus_player_collision) > 0):
-                player.game_over_sound.play(volume= self.volume)
-                player.remove_from_sprite_lists()
-                self.write_score_file(self.score)
-                game_over_view = GameOver()
-                self.window.show_view(game_over_view)
+                for virus in virus_player_collision:
+                    virus.remove_from_sprite_lists()
+                self.player_health -= 1
+                if self.player_health == 1:
+                    self.player_sprite.color = (255,255,255)
+                if self.player_health == 0:
+                    player.game_over_sound.play(volume= self.volume)
+                    # self.background_music.stop(self.background_music)
+                    player.remove_from_sprite_lists()
+                    self.write_score_file(self.score)
+                    game_over_view = GameOver()
+                    self.background_music.stop(self.play_music)
+                    self.window.show_view(game_over_view)
  
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
         for enemy in self.enemies:
