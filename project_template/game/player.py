@@ -1,5 +1,5 @@
 import arcade 
-
+from player_character import PlayerCharacter
 class Player(arcade.Sprite):
     
     def __init__(self):
@@ -7,11 +7,12 @@ class Player(arcade.Sprite):
         super().__init__()
         self.player_list = None
         self.player_sprite = None
+
         self.setup()
     
     def setup(self):
         self.player_list = arcade.SpriteList()
-        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.1)
+        self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 108
         self.player_health = 1

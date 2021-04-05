@@ -17,7 +17,7 @@ from mask import Mask
 from player import Player
 from bullet import Bullet
 import time
-
+from player_character import PlayerCharacter
 
 class MyGame(arcade.View):
     """ Main application class. """
@@ -141,6 +141,7 @@ class MyGame(arcade.View):
             for i in range(3):
                 b = Bullet(self.player_sprite.center_x, self.player_sprite.center_y,x -(i * 30), y-(i * 40))
                 for l in b.bullet_list:
+                    l.color = (255,0,0)
                     self.bullet_list.append(l)
             self.mouse_clicks += 1
             if self.mouse_clicks > 4:
