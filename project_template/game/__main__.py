@@ -15,7 +15,7 @@ import random
 from particle import Particle
 from smoke import Smoke
 from mask import Mask
-from player import PlayerCharacter
+from player_character import PlayerCharacter
 
 
 class MyGame(arcade.View):
@@ -173,6 +173,8 @@ class MyGame(arcade.View):
         self.enemies.update()
         self.bullet_list.update()
         self.mask_list.update()
+        self.player_list.update_animation(delta_time)
+
         
         for bullet in self.bullet_list:
 
