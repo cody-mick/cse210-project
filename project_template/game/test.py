@@ -14,8 +14,8 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # Movement speed of player, in pixels per frame
-PLAYER_MOVEMENT_SPEED = 7
-GRAVITY = 1.5
+PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = 1.0
 PLAYER_JUMP_SPEED = 30
 
 # How many pixels to keep as a minimum margin between the character

@@ -15,7 +15,7 @@ import random
 from particle import Particle
 from smoke import Smoke
 from mask import Mask
-from player import Character
+from player import PlayerCharacter
 
 
 class MyGame(arcade.View):
@@ -66,7 +66,7 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
  
         # Set up the player
-        self.player_sprite = Character()
+        self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 80
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
