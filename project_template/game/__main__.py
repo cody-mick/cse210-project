@@ -15,7 +15,7 @@ import random
 from particle import Particle
 from smoke import Smoke
 from mask import Mask
-
+from player_character import PlayerCharacter
 
 
 class MyGame(arcade.View):
@@ -66,7 +66,7 @@ class MyGame(arcade.View):
         self.explosions_list = arcade.SpriteList()
  
         # Set up the player
-        self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
+        self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 108
         self.player_sprite.hurt_sound = arcade.Sound("assets/sounds/hurt2.wav")
@@ -173,6 +173,8 @@ class MyGame(arcade.View):
         self.enemies.update()
         self.bullet_list.update()
         self.mask_list.update()
+        self.player_list.update_animation(delta_time)
+
         
         for bullet in self.bullet_list:
 
