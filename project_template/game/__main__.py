@@ -12,7 +12,6 @@ from virus_cells import Virus_cells
 from solid_blocks import Solid_blocks
 import math
 import random
-from menu import Menu
 from particle import Particle
 from smoke import Smoke
 from mask import Mask
@@ -37,7 +36,7 @@ class MyGame(arcade.View):
     
         # Sprite lists
         self.coin_list = None
-        self.wall_list = None
+        self.wall_list = Solid_blocks().wall_list
         self.player_list = None
         self.brick_list = Destroyable_blocks().random_wall_list
         self.virus = Virus_cells()
@@ -48,11 +47,9 @@ class MyGame(arcade.View):
         self.explosions_list = None
         self.score = 0 
         self.mask_count = Mask().mask_count
-        
         self.player_sprite = None
         self.physics_engine = None
         self.volume = 0.4
-
         self.background = None
         self.background_music = None
         self.width = constants.SCREEN_WIDTH
@@ -67,8 +64,7 @@ class MyGame(arcade.View):
         self.destroyable_objects = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-
+ 
         # Set up the player
         self.player_sprite = arcade.Sprite("assets/images/idle_robot.png", 0.18)
         self.player_sprite.center_x = 64
@@ -79,23 +75,6 @@ class MyGame(arcade.View):
 
         self.background_music = arcade.Sound("assets/sounds/Lonely thoughts.mp3")
         self.background_music.play(volume = 0.6)
-    
-
-        # --- Load in a map from the tiled editor ---
-
-        # Name of map file to load
-        map_name = ":resources:tmx_maps/map.tmx"
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'SolidBlocks'
-
-        # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
-
-        # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
-                                                      layer_name=platforms_layer_name,
-                                                      scaling=constants.TILE_SCALING,
-                                                      use_spatial_hash=True)
 
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
@@ -128,8 +107,8 @@ class MyGame(arcade.View):
         self.mask_list.draw()
 
         # Draw the Score
-        arcade.draw_text(f"Score: {self.score}", int((constants.SCREEN_WIDTH / 2) - 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
-        arcade.draw_text(f"Masks left: {self.mask_count}", int((constants.SCREEN_WIDTH / 2) + 64), constants.SCREEN_HEIGHT - 50, arcade.color.BLACK, 25)
+        arcade.draw_text(f"Score: {self.score}", 64, 32, arcade.color.BLUE_SAPPHIRE, font_size=30, font_name= "Arial", bold= True)
+        arcade.draw_text(f"Masks left: {self.mask_count}", (constants.SCREEN_WIDTH-256), 32, arcade.color.BLUE_SAPPHIRE, font_size=30,font_name= "Arial", bold= True)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -298,7 +277,7 @@ class MyGame(arcade.View):
 
         # Random 1 in 100 chance that we'll change from our old direction and
         # then re-aim toward the player
-        if random.randrange(0,350) == 0:
+        if random.randrange(0,100) == 0:
 
             # Get the position of the enemy in this case
             start_x = current.center_x
@@ -313,8 +292,8 @@ class MyGame(arcade.View):
             angle = math.atan2(y_diff, x_diff)
 
             # Calculate changes
-            current.change_x = math.cos(angle)# * random.randrange(1,2)
-            current.change_y = math.sin(angle)# * random.randrange(1,2)
+            current.change_x = math.cos(angle * random.randrange(1,2))# * random.randrange(1,2)
+            current.change_y = math.sin(angle * random.randrange(1,2))# * random.randrange(1,2)
     
     def write_score_file(self, score):
         file = open("game_scores.txt", "a")
@@ -333,7 +312,7 @@ class Menu(arcade.View):
         """ Draw the menu """
         arcade.start_render()
         arcade.draw_text("Welcome to COVIDman! - Click to start >>>", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.BLUE, font_size=30, anchor_x="center")
-        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/3839350.jpg"))
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/Covidman_menu.jpg"))
 
      def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ Use a mouse press to advance to the 'game' view. """
@@ -366,7 +345,7 @@ class GameOver(arcade.View):
         high_score = max(scores_list)
 
         arcade.start_render()
-        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/game_over.jpg"))
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, arcade.load_texture("assets/images/Covidman_gameover.jpg"))
         arcade.draw_text(f"Score: {last_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3, arcade.color.WHITE, font_size=30, anchor_x="center")
         arcade.draw_text(f"High score: {high_score}", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/3 - 40, arcade.color.WHITE, font_size=30, anchor_x="center")        
 
