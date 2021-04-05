@@ -31,3 +31,5 @@ Cody Mickelsen - cmick@byui.edu
 Sam Cummings - 
 Erick Vega - 
 Trent Patton - 
+
+## How to run:
