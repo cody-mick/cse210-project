@@ -61,6 +61,7 @@ class MyGame(arcade.View):
         self.bullet_list = None
         self.shotgun = False
         self.mouse_clicks = 0 
+        self.play_music = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -70,11 +71,11 @@ class MyGame(arcade.View):
         self.destroyable_objects = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        
 
- 
+        
         self.background_music = arcade.Sound("assets/sounds/Lonely thoughts.mp3")
         self.play_music = self.background_music.play(volume = 0.3)
+
 
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
@@ -266,6 +267,7 @@ class MyGame(arcade.View):
                     player.remove_from_sprite_lists()
                     self.write_score_file(self.score)
                     game_over_view = GameOver()
+                    self.background_music.stop(self.play_music)
                     self.window.show_view(game_over_view)
  
         #Check to see if a enemie hits an obstacle (walls, other enemie, destroyable_block)
