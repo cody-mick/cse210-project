@@ -1,4 +1,9 @@
 env
 __pycache__
+<<<<<<< HEAD
 .DS_Store
 project_template/game/.DS_Store
+=======
+project_template/.DS_Store
+.DS_Store
+>>>>>>> 3688f22d3a1f6463b65cbcd1abf68d0fa244a12e

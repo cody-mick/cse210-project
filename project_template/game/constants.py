@@ -14,12 +14,12 @@ stone_img_width = int(img_width * SPRITE_SCALING)
 stone_img_height = int(img_height * SPRITE_SCALING)
 
 SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 900
+SCREEN_HEIGHT = 960
 SCREEN_TITLE = "Sprite Move with Walls Example"
 TILE_SCALING = 0.44
 
-MOVEMENT_SPEED = 7 
-BULLET_SPEED = 10
+MOVEMENT_SPEED = 10 
+BULLET_SPEED = 30
 
 # Explosions
 

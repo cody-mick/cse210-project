@@ -10,7 +10,7 @@ class Solid_blocks(arcade.Sprite):
     In charge of making solid blocks
     """
 
-    def __init__(self):
+    def __init__(self, ):
         super().__init__
         self.wall_list = None
         self.setup()
