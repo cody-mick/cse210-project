@@ -1,7 +1,7 @@
 import arcade
 import constants
 
-class Player(arcade.Sprite):
+class Character(arcade.Sprite):
     def __init__(self):
         super().__init__()
 
@@ -10,9 +10,9 @@ class Player(arcade.Sprite):
 
         # Load a left facing texture and a right facing texture.
         # flipped_horizontally=True will mirror the image we load.
-        texture = arcade.load_texture("assets/images/idle_robot.png")
+        texture = arcade.load_texture("assets/robot animations/Idle1.png")
         self.textures.append(texture)
-        texture = arcade.load_texture("assets/images/idle_robot.png",
+        texture = arcade.load_texture("assets/robot animations/Idle1.png",
                                       flipped_horizontally=True)
         self.textures.append(texture)
 
