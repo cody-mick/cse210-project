@@ -73,8 +73,8 @@ class MyGame(arcade.View):
         
 
  
-        # self.background_music = arcade.Sound("assets/sounds/music_test.mp3")
-        # self.play_music =self.background_music.play(volume = 0.6)
+        self.background_music = arcade.Sound("assets/sounds/music_test.mp3")
+        self.play_music = self.background_music.play(volume = 0.3)
 
         # Add all of the obstacles 
         self.walls_and_bricks.extend(self.wall_list)
